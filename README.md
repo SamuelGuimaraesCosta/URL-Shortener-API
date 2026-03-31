@@ -27,7 +27,7 @@ Running the Project
 
 1.  Clone the repository
 
-git clone https://github.com/yourusername/go-url-shortener
+git clone https://github.com/SamuelGuimaraesCosta/URL-Shortener-API
 
 2.  Run the application
 
