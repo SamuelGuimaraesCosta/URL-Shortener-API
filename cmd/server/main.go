@@ -6,24 +6,27 @@ import (
 
 	"github.com/gorilla/mux"
 
-	"go-url-shortener/internal/handler"
-	"go-url-shortener/internal/middleware"
-	"go-url-shortener/internal/repository"
-	"go-url-shortener/internal/service"
+	"github.com/SamuelGuimaraesCosta/URL-Shortener-API/internal/handler"
+	"github.com/SamuelGuimaraesCosta/URL-Shortener-API/internal/middleware"
+	"github.com/SamuelGuimaraesCosta/URL-Shortener-API/internal/repository"
+	"github.com/SamuelGuimaraesCosta/URL-Shortener-API/internal/service"
 )
 
 func main() {
 
 	repo := repository.NewMemoryRepository()
-	service := service.NewURLService(repo)
-	handler := handler.NewURLHandler(service)
+
+	urlService := service.NewURLService(repo)
+
+	urlHandler := handler.NewURLHandler(urlService)
 
 	router := mux.NewRouter()
 
 	router.Use(middleware.LoggingMiddleware)
+	router.Use(middleware.RateLimit)
 
-	router.HandleFunc("/shorten", handler.ShortenURL).Methods("POST")
-	router.HandleFunc("/{code}", handler.Redirect).Methods("GET")
+	router.HandleFunc("/shorten", urlHandler.ShortenURL).Methods("POST")
+	router.HandleFunc("/{code}", urlHandler.Redirect).Methods("GET")
 
 	log.Println("Server running on :8080")
 
