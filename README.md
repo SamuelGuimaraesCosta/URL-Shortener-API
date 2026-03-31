@@ -1,73 +1,183 @@
-Go URL Shortener
+# URL-Shortener-API
 
-A simple URL shortener API built with Go.
+A production-style URL shortener API built with **Go (Golang)**.
+This project demonstrates a layered backend architecture commonly used in professional Go services.
 
-This project demonstrates a minimal REST API using the Go standard
-library.
+The API allows users to shorten URLs and redirect to the original links while tracking access statistics.
 
-Features
+---
 
--   Create shortened URLs
--   Redirect to original URL
--   Thread-safe in-memory storage
--   No external dependencies
+## Repository
 
-Tech Stack
+https://github.com/SamuelGuimaraesCosta/URL-Shortener-API
 
--   Go
--   net/http
--   JSON API
+---
 
-Project Structure
+## Features
 
-main.go -> server entry point handlers.go -> API handlers store.go ->
-in-memory storage
+* Create shortened URLs
+* Redirect shortened URLs to the original link
+* Track access count (hits)
+* Thread-safe in-memory storage
+* Layered architecture (Handler → Service → Repository)
+* Middleware logging
+* Cryptographically secure short code generation
 
-Running the Project
+---
 
-1.  Clone the repository
+## Tech Stack
 
-git clone https://github.com/SamuelGuimaraesCosta/URL-Shortener-API
+* **Go**
+* **Gorilla Mux (HTTP Router)**
+* **REST API**
+* **Mutex for concurrency safety**
+* **Standard Library**
 
-2.  Run the application
+---
 
-go run .
+## Project Architecture
 
-Server will start on:
+The project follows a clean backend architecture structure:
 
+```
+URL-Shortener-API
+│
+├── cmd
+│   └── server
+│       └── main.go
+│
+├── internal
+│   ├── handler
+│   ├── service
+│   ├── repository
+│   ├── middleware
+│   └── model
+│
+├── pkg
+│   └── utils
+│
+└── go.mod
+```
+
+### Layers
+
+**Handler**
+
+* HTTP endpoints
+* request/response handling
+
+**Service**
+
+* business logic
+* URL creation and retrieval
+
+**Repository**
+
+* data storage abstraction
+
+**Middleware**
+
+* logging and request lifecycle management
+
+---
+
+## Installation
+
+Clone the repository:
+
+```
+git clone https://github.com/SamuelGuimaraesCosta/URL-Shortener-API.git
+```
+
+Enter the project folder:
+
+```
+cd URL-Shortener-API
+```
+
+Install dependencies:
+
+```
+go mod tidy
+```
+
+Run the server:
+
+```
+go run ./cmd/server
+```
+
+The API will start at:
+
+```
 http://localhost:8080
+```
 
-API Usage
+---
 
-Shorten URL
+## API Endpoints
 
-POST /shorten
+### Create Short URL
+
+POST `/shorten`
 
 Request:
 
-{ “url”: “https://google.com” }
+```
+{
+  "url": "https://google.com"
+}
+```
 
 Response:
 
-{ “short”: “http://localhost:8080/abc123” }
+```
+{
+  "short": "http://localhost:8080/Ab3KpQ"
+}
+```
 
-Redirect
+---
 
-Access:
+### Redirect to Original URL
 
-http://localhost:8080/abc123
+GET `/{code}`
 
-The service will redirect to the original URL.
+Example:
 
-Possible Improvements
+```
+http://localhost:8080/Ab3KpQ
+```
 
--   Persistent storage (PostgreSQL / Redis)
--   Custom short codes
--   Expiration time for links
--   Docker support
--   Rate limiting
--   Metrics and logging
+The server will redirect to the stored original URL.
 
-License
+---
+
+## Example using curl
+
+Create a short URL:
+
+```
+curl -X POST http://localhost:8080/shorten \
+-H "Content-Type: application/json" \
+-d '{"url":"https://google.com"}'
+```
+
+---
+
+## Future Improvements
+
+* PostgreSQL storage
+* Redis caching
+* Rate limiting
+* URL expiration
+* Authentication (JWT)
+* Metrics and monitoring (Prometheus)
+* Docker container support
+* Unit and integration tests
+
+---
+
+## License
 
 MIT
